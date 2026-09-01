@@ -65,6 +65,10 @@ Nós dividimos a aplicação de forma organizada:
 Com o ambiente ativado e as dependências instaladas, rode o servidor usando o Uvicorn:
 
 ```bash
+fastapi dev
+
+ou 
+
 uvicorn main:app --reload
 ```
 - `main`: Nome do arquivo (main.py).
