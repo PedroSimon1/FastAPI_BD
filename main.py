@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.item import app_router
+from api.auth import auth_router
 from database import lifespan
 
 # Criação da instância principal da aplicação FastAPI
@@ -18,15 +19,27 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# ==========================================
 # Configuração do Middleware de CORS (Cross-Origin Resource Sharing)
-# Essencial para que o frontend (ex: React, Vue, HTML/JS puro) em outro domínio ou porta consiga fazer requisições para esta API.
+# ==========================================
+# O CORS é um mecanismo de segurança dos navegadores que impede que um site de uma origem 
+# (ex: http://meu-frontend.com) acesse recursos de outra origem (ex: http://minha-api.com).
+# Para permitir que o frontend (ex: React rodando na porta 3000) consuma esta API (rodando na porta 8000),
+# precisamos configurar explicitamente essas políticas.
+#
+# AVISO PARA PRODUÇÃO: O uso de `allow_origins=["*"]` permite que QUALQUER site faça requisições
+# para a sua API. Em um ambiente real, você deve listar apenas os domínios confiáveis.
+# Exemplo seguro: allow_origins=["http://localhost:3000", "https://meu-site-oficial.com"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite requisições de qualquer origem (cuidado em produção!)
-    allow_credentials=True, # Permite o envio de cookies e credenciais de autenticação
-    allow_methods=["*"],  # Permite todos os métodos HTTP (GET, POST, PUT, DELETE, etc.)
-    allow_headers=["*"],  # Permite todos os cabeçalhos nas requisições
+    allow_origins=["*"],  # Em ambiente de aula deixamos aberto ("*"), mas com o alerta acima!
+    allow_credentials=True, # Permite envio de cookies e cabeçalhos de autenticação (como o Bearer JWT)
+    allow_methods=["*"],  # Permite todos os métodos HTTP (GET, POST, OPTIONS, etc.)
+    allow_headers=["*"],  # Permite todos os cabeçalhos (essencial para receber o "Authorization: Bearer <token>")
 )
 
-# Inclui as rotas (endpoints) definidas no router 'app_router' (arquivo api/item.py)
+# Registramos as rotas de autenticação (login e registro)
+app.include_router(auth_router)
+
+# Inclui as rotas (endpoints) de CRUD de itens
 app.include_router(app_router)

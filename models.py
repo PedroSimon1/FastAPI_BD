@@ -46,3 +46,49 @@ class ItemUpdate(SQLModel):
     description: str | None = None
     price: float | None = None
     is_active: bool | None = None
+
+
+# ==========================================
+# Modelos de Autenticação e Usuários
+# ==========================================
+
+class UserBase(SQLModel):
+    """
+    Classe base para Usuários. Contém os dados em comum.
+    """
+    username: str = Field(index=True, unique=True)
+    email: str | None = Field(default=None)
+    is_active: bool = Field(default=True)
+
+
+class User(UserBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    hashed_password: str
+
+
+class UserCreate(UserBase):
+    """
+    Schema utilizado para criar um usuário. 
+    """
+    password: str
+
+
+class UserLogin(SQLModel):
+    """
+    Schema simplificado para receber apenas username e password no login (via JSON).
+    """
+    username: str
+    password: str
+
+
+class UserRead(UserBase):
+    id: int
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(SQLModel):
+    username: str | None = None
