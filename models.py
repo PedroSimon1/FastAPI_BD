@@ -68,9 +68,21 @@ class User(UserBase, table=True):
 
 class UserCreate(UserBase):
     """
-    Schema utilizado para criar um usuário. 
+    Schema utilizado para criar um usuário.
     """
     password: str
+
+
+class UserUpdate(SQLModel):
+    """
+    Schema (Schema) utilizado para validar os dados recebidos ao ATUALIZAR um usuário (PUT).
+    Todos os campos são opcionais, pois o cliente pode enviar apenas os campos que deseja alterar.
+    Se 'password' for enviado, um novo hash será gerado antes de salvar (nunca em texto puro).
+    """
+    username: str | None = None
+    email: str | None = None
+    is_active: bool | None = None
+    password: str | None = None
 
 
 class UserLogin(SQLModel):

@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.item import app_router
 from api.auth import auth_router
+from api.user import user_router
 from database import lifespan
 
 # Criação da instância principal da aplicação FastAPI
@@ -43,3 +44,6 @@ app.include_router(auth_router)
 
 # Inclui as rotas (endpoints) de CRUD de itens
 app.include_router(app_router)
+
+# Inclui as rotas (endpoints) de CRUD de usuários
+app.include_router(user_router)
